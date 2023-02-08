@@ -1,4 +1,4 @@
-name: publish
+name: Publish crl/dicom-tools container image
 on:
   workflow_dispatch:
   push:
