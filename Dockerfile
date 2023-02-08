@@ -34,11 +34,6 @@ RUN mkdir /src && cd /src && \
     git clone https://github.com/rordenlab/dcm2niix.git && \
     cd dcm2niix && mkdir build && cd build && cmake .. && make && make install
 
-COPY retrieve_dcmtk.sh /usr/bin/retrieve_dcmtk.sh
-COPY retrieve_dcmtk_by-series.sh /usr/bin/retrieve_dcmtk_by-series.sh
-RUN chmod a+rwx /usr/bin/retrieve_dcmtk.sh && \
-    chmod a+rwx /usr/bin/retrieve_dcmtk_by-series.sh
-
 WORKDIR /data
 CMD echo "Run binaries such as dcm2niix, dcmdjpeg, sort_dicoms.py"
 
