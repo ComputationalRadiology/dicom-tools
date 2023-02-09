@@ -30,9 +30,16 @@ RUN apt-get install -y --no-install-recommends \
     vim nano python3 python3-pip && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
+RUN pip3 install pydicom SimpleITK numpy
+
 RUN mkdir /src && cd /src && \
     git clone https://github.com/rordenlab/dcm2niix.git && \
     cd dcm2niix && mkdir build && cd build && cmake .. && make && make install
+
+COPY sort_dicoms.py /usr/local/bin
+COPY uncompress_dicoms.py /usr/local/bin
+COPY dicom_tree_to_nifti.py /usr/local/bin
+RUN chmod a+rx /usr/local/bin/sort_dicoms.py /usr/local/bin/uncompress_dicoms.py /usr/local/bin/dicom_tree_to_nifti.py
 
 WORKDIR /data
 CMD echo "Run binaries such as dcm2niix, dcmdjpeg, sort_dicoms.py"
@@ -42,5 +49,14 @@ CMD echo "Run binaries such as dcm2niix, dcmdjpeg, sort_dicoms.py"
 # 
 #
 # docker run -it --rm --entrypoint bash crl/dicom-tools
-#
+# docker run --rm crl/dicom-tools dcm2niix -v
+# docker run -v datainputdir:/data/input -v dataoutputdir:/data/output \
+#   --rm crl/dicom-tools sort_dicoms.py /data/input /data/output/sorted
+
+# docker run -v datainputdir:/data/input -v dataoutputdir:/data/output \
+#   --rm crl/dicom-tools sort_dicoms.py /data/input /data/output/sorted
+# docker run -v datainputdir:/data/input -v dataoutputdir:/data/output --rm \
+# crl/dicom-tools uncompress_dicoms.py /data/input /data/output/uncompressed
+# docker run -v datainputdir:/data/input -v dataoutputdir:/data/output --rm \
+# crl/dicom-tools dicom_tree_to_nifti.py /data/input /data/output/converted
 
