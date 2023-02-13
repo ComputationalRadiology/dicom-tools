@@ -6,6 +6,7 @@
 import os
 import pydicom # pydicom is using the gdcm package for decompression
 import sys
+import logging
 
 def clean_text(string):
     # clean and standardize text descriptions, which makes searching files easier
@@ -13,6 +14,12 @@ def clean_text(string):
     for symbol in forbidden_symbols:
         string = string.replace(symbol, "_") # replace everything with an underscore
     return string.lower()  
+
+logging.basicConfig(
+  level=logging.INFO,
+  format="%(asctime)s %(levelname)s %(message)s",
+  datefmt="%Y-%m-%d %H:%M:%S",
+  )
 
 # Parse arguments
 n = len(sys.argv) - 1
@@ -25,18 +32,20 @@ if n != 2:
 src = sys.argv[1]
 dst = sys.argv[2]
 
-print("src is " + src + "\n")
-print("dest is " + dst + "\n")
+logging.debug("src is " + src + "\n")
+logging.debug("dest is " + dst + "\n")
 
-print('reading file list...')
+logging.debug('reading file list...')
 unsortedList = []
 for root, dirs, files in os.walk(src):
     for file in files: 
 #        if ".dcm" in file:# exclude non-dicoms, good for messy folders
             unsortedList.append(os.path.join(root, file))
 
-print('%s files found.' % len(unsortedList))
+fileCount = len(unsortedList)
+logging.info('Working on sorting %s files.' % len(unsortedList))
        
+count = 0
 for dicom_loc in unsortedList:
     # read the file
     ds = pydicom.read_file(dicom_loc, force=True)
@@ -72,8 +81,13 @@ for dicom_loc in unsortedList:
        
     if not os.path.exists(os.path.join(dst, patientID, studyDate, studyDescription, seriesDescription)):
         os.makedirs(os.path.join(dst, patientID, studyDate, studyDescription, seriesDescription))
-        print('Saving out file: %s - %s - %s - %s.' % (patientID, studyDate, studyDescription, seriesDescription ))
-       
+
+    count = count + 1
+    logging.debug('Saving out ' + str(count) + ' file: %s - %s - %s - %s.' % (patientID, studyDate, studyDescription, seriesDescription ))
     ds.save_as(os.path.join(dst, patientID, studyDate, studyDescription, seriesDescription, fileName))
 
-print('done.')
+logging.info('Wrote out ' + str(count) + ' files.')
+if not count == fileCount:
+  logging.warning('Files in and Files out differ.')
+
+logging.debug('Execution of sort_dicoms.py completed.')

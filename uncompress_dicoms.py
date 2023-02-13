@@ -3,6 +3,8 @@
 import os
 import pydicom # pydicom is using the gdcm package for decompression
 import sys
+import logging
+import subprocess
 
 # Parse arguments
 n = len(sys.argv) - 1
@@ -15,29 +17,36 @@ if n != 2:
 src = sys.argv[1]
 dst = sys.argv[2]
 
-print("src is " + src + "\n")
-print("dest is " + dst + "\n")
+logging.basicConfig(
+  level=logging.INFO,
+#  level=logging.DEBUG,
+  format="%(asctime)s %(levelname)s %(message)s",
+  datefmt="%Y-%m-%d %H:%M:%S",
+  )
 
-print('reading file list...')
+logging.debug("src is " + src + "\n")
+logging.debug("dest is " + dst + "\n")
+
+logging.debug('reading file list...')
 filelist = []
 for root, dirs, files in os.walk(src):
     for file in files: 
             filelist.append(os.path.join(root, file))
 
-print('%s files found.' % len(filelist))
+logging.info('%s files found.' % len(filelist))
        
 totalfiles = len(filelist)
 onetenth = totalfiles / 10
 count = 0
 for dicom_loc in filelist:
   outname = os.path.join(dst, dicom_loc)
-  print('inname: ' + dicom_loc + ', outfile : ' + outname)
+  logging.debug('inname: ' + dicom_loc + ', outfile : ' + outname)
   outdirname = os.path.dirname( outname )
   if not os.path.isdir( outdirname ):
     os.makedirs( outdirname )
-  os.system('dcmdjpeg ' + dicom_loc + ' ' + outname)
+  subprocess.run(['dcmdjpeg', dicom_loc, outname])
   count = count + 1
   if (count % onetenth == 0):
-    print('Processed ' + count + ' files.')
+    logging.info('Processed set of ' + str(count) + ' files.')
 
-print('done.')
+logging.debug('uncompress_dicoms.py completed.')

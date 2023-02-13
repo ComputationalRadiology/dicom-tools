@@ -3,6 +3,8 @@
 import os
 import pydicom # pydicom is using the gdcm package for decompression
 import sys
+import subprocess
+import logging
 
 # Parse arguments
 n = len(sys.argv) - 1
@@ -15,7 +17,13 @@ if n != 2:
 src = sys.argv[1]
 dst = sys.argv[2]
 
-print('reading list of directories to convert from ' + src)
+logging.basicConfig(
+  level=logging.INFO,
+  format="%(asctime)s %(levelname)s %(message)s",
+  datefmt="%Y-%m-%d %H:%M:%S",
+  )
+
+logging.debug('Reading list of directories to convert from ' + src)
 filelist = []
 for root, dirs, files in os.walk(src):
     if len(files) != 0:
@@ -24,8 +32,8 @@ for root, dirs, files in os.walk(src):
         outdirname = os.path.join(dst, dirfullname)
         if not os.path.isdir( outdirname ):
           os.makedirs( outdirname )
-#      os.system('dcm2niix ' + '-o ' + outdirname + ' -b y -ba n ' + dirfullname)
-        print('Converting : ' + dirfullname)
-        os.system('dcm2niix ' + '-o ' + outdirname + ' -b y -ba n ' + dirfullname)
+        logging.debug('Converting : ' + dirfullname)
+        subprocess.run(['dcm2niix', '-o', outdirname, 
+                         '-b', 'y', '-ba', 'n', dirfullname])
 
 exit(0)
