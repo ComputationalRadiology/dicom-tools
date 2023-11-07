@@ -27,10 +27,11 @@ RUN apt-get install -y build-essential git cmake pkg-config
 RUN apt-get install -y --no-install-recommends \
     dcmtk \
     dicom3tools \
+    jq \
     vim nano python3 python3-pip && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install pydicom SimpleITK numpy
+RUN pip3 install pydicom pynetdicom SimpleITK numpy
 
 RUN mkdir /src && cd /src && \
     git clone https://github.com/rordenlab/dcm2niix.git && \
