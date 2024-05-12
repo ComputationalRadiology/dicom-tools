@@ -6,6 +6,7 @@ import sys
 import subprocess
 import logging
 import argparse
+import json
 
 from pydicom import dcmread
 
@@ -37,6 +38,7 @@ parser.add_argument("--aet", required=False, default="RESEARCHPACS", help="The c
 parser.add_argument("--aec", required=False, default="PACSDCM", help="The called Application Entity Title of the DICOM node that is called.")
 parser.add_argument("--namednode", required=False, default="pacsstor.tch.harvard.edu", help="The DICOM peer that is called.")
 parser.add_argument("--dicomport", required=False, default="104", help="The port on the DICOM peer.")
+parser.add_argument("--accessionNumberFile", required=False, help="A file to report the discovered accession numbers into.")
 args = parser.parse_args()
 
 # user specified parameters
@@ -52,6 +54,10 @@ if args.modality != None:
 else:
   Modality = ""
 
+if args.accessionNumberFile != None:
+  accFile = args.accessionNumberFile
+else:
+  accFile = ""
 
 logging.info('Retrieving subject with mrn : %s.' % mrn )
 logging.info('Storing DICOM to directory %s.' % dst )
@@ -115,13 +121,15 @@ subprocess.run(["findscu", "-od", retrieveOutdir,
 # corresponding to entries in it using os.scandir() method
 obj = os.scandir(retrieveOutdir)
 
+accessionNumberList = []
+
 for entry in obj :
     if entry.is_file():
         fname = entry.name
         print('fname is : ' + fname)
         print('path of file is : ' + entry.path)
         ds = dcmread(entry.path)
-        # print(ds)
+        print(ds)
         AccessionNumber = ds['AccessionNumber'].value
         print('AccessionNumber is :' + str(AccessionNumber))
         print('StudyDate searching for :' + str(StudyDateVar))
@@ -135,6 +143,7 @@ for entry in obj :
           if Modality != ds['Modality'].value:
             continue
         outdir = dst + '/' + str(AccessionNumber)
+        accessionNumberList.append( AccessionNumber )
         print(' Retrieving for AccessionNumber :' + str(AccessionNumber) )
         print(' Retrieving for AccessionNumber :' + str(AccessionNumber) +
             '\nStudyDate is :' + str(ds['StudyDate'].value) +
@@ -149,6 +158,14 @@ for entry in obj :
           "-aec", AEC, 
           "--study", 
           str(NAMEDNODE), str(PORT), entry.path ])
+
+print('Retrieved accession numbers:')
+print(accessionNumberList)
+
+if accFile != "":
+  with open(accFile, "w") as outfile:
+    outfile.write( json.dumps(accessionNumberList, indent=4) )
+
 
 exit()
 

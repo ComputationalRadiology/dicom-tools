@@ -7,6 +7,7 @@ import os
 import pydicom # pydicom is using the gdcm package for decompression
 import sys
 import logging
+import argparse
 
 def clean_text(string):
     # clean and standardize text descriptions, which makes searching files easier
@@ -21,16 +22,13 @@ logging.basicConfig(
   datefmt="%Y-%m-%d %H:%M:%S",
   )
 
-# Parse arguments
-n = len(sys.argv) - 1
-if n != 2:
-  print("Usage: " + sys.argv[0] + " inputdir outputdir\n")
-  print("Length is " + repr(n))
-  sys.exit(1)
+parser = argparse.ArgumentParser(description='Sort DICOM files.')
+parser.add_argument("inputDir")
+parser.add_argument("outputDir")
+args = parser.parse_args()
 
-# user specified parameters
-src = sys.argv[1]
-dst = sys.argv[2]
+src = args.inputDir
+dst = args.outputDir
 
 logging.debug("src is " + src + "\n")
 logging.debug("dest is " + dst + "\n")

@@ -6,18 +6,15 @@ import sys
 import logging
 import subprocess
 import pathlib
+import argparse
 
+parser = argparse.ArgumentParser(description='Uncompress DICOM files.')
+parser.add_argument("inputDir")
+parser.add_argument("outputDir")
+args = parser.parse_args()
 
-# Parse arguments
-n = len(sys.argv) - 1
-if n != 2:
-  print("Usage: " + sys.argv[0] + " inputdir outputdir\n")
-  print("Length is " + repr(n))
-  sys.exit(1)
-
-# user specified parameters
-src = sys.argv[1]
-dst = sys.argv[2]
+src = args.inputDir
+dst = args.outputDir
 
 logging.basicConfig(
 #  level=logging.INFO,
