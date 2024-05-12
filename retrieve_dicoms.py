@@ -24,8 +24,8 @@ def clean_text(string):
 # Initialize logging and set its level
 logging.basicConfig()
 log = logging.getLogger()
-log.setLevel( logging.INFO )
 log.setLevel( logging.DEBUG )
+log.setLevel( logging.INFO )
 
 # Parse the arguments.
 parser = argparse.ArgumentParser(description='Retrieve DICOM files.')
@@ -53,8 +53,11 @@ else:
   Modality = ""
 
 
-print("mrn is " + mrn + "\n")
-print("dest is " + dst + "\n")
+logging.info('Retrieving subject with mrn : %s.' % mrn )
+logging.info('Storing DICOM to directory %s.' % dst )
+
+# print("mrn is " + mrn + "\n")
+# print("dest is " + dst + "\n")
 
 if not os.path.isdir( dst + '/STUDY_QUERY_INFO'):
   os.makedirs(dst+'/STUDY_QUERY_INFO')
@@ -136,7 +139,7 @@ for entry in obj :
         print(' Retrieving for AccessionNumber :' + str(AccessionNumber) +
             '\nStudyDate is :' + str(ds['StudyDate'].value) +
             '\nModality is : ' + ds['Modality'].value + '\n' )
-        print('outdir for this retrieve is : ' + outdir)
+        print('DICOM data retrieved to : ' + outdir)
         if not os.path.isdir( outdir ):
           os.mkdir(outdir)
         subprocess.run(["getscu", 
