@@ -34,9 +34,9 @@ parser.add_argument("--outputDir", required=True)
 parser.add_argument("--subjectID", required=True)
 parser.add_argument("--studyDate", required=False)
 parser.add_argument("--modality", required=False)
-parser.add_argument("--aet", required=False, default="RESEARCHPACS", help="The calling Application Entity Title is used to identify a DICOM application")
-parser.add_argument("--aec", required=False, default="PACSDCM", help="The called Application Entity Title of the DICOM node that is called.")
-parser.add_argument("--namednode", required=False, default="pacsstor.tch.harvard.edu", help="The DICOM peer that is called.")
+parser.add_argument("--aet", required=False, default="PACSDCM", help="The calling Application Entity Title is used to identify a DICOM application")
+parser.add_argument("--aec", required=False, default="SYNAPSERESEARCH", help="The called Application Entity Title of the DICOM node that is called.")
+parser.add_argument("--namednode", required=False, default="10.20.2.28", help="The DICOM peer that is called.")
 parser.add_argument("--dicomport", required=False, default="104", help="The port on the DICOM peer.")
 parser.add_argument("--accessionNumberFile", required=False, help="A file to report the discovered accession numbers into.")
 args = parser.parse_args()
@@ -76,6 +76,10 @@ if not os.path.isdir( dst + '/STUDY_QUERY_INFO'):
 # The named node is the DICOM peer that is called.
 #NAMEDNODE = 'pacsstor.tch.harvard.edu'
 #PORT = 104
+
+# AE: SYNAPSERESEARCH
+# Port: 104
+# IP: 10.20.2.28
 
 # 2BP research
 # AEC: 2BPMRI_1
