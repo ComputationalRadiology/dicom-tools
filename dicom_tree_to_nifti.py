@@ -39,7 +39,7 @@ for root, dirs, files in os.walk(src):
           os.makedirs( outdirname )
         logging.debug('Converting : ' + dirfullname)
         logging.debug('Writing to : ' + outdirname)
-        subprocess.run(['dcm2niix', '-o', outdirname, 
+        subprocess.run(['dcm2niix', '-o', outdirname, '-z', 'y', 
                          '-b', 'y', '-ba', 'n', dirfullname])
 
 exit(0)
