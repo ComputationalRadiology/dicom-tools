@@ -13,6 +13,7 @@ ENV DEBIAN_FRONTEND="noninteractive"
 #  A symptom that this is needed is that apt-get cannot access packages.
 #  A symptom that this is needed is that pip3 cannot access packages.
 # This is not needed if building on a system that does not  use a proxy.
+#   apt can be configured to read from archives via https.
 #
 
 LABEL maintainer="warfield@crl.med.harvard.edu"
@@ -22,7 +23,8 @@ LABEL vendor="Computational Radiology Laboratory"
 RUN apt-get -y update && \
     apt-get -y upgrade
 
-RUN apt-get install -y build-essential git cmake pkg-config
+
+RUN apt-get install -y build-essential git cmake pkg-config vim
 
 RUN apt-get install -y --no-install-recommends \
     dcmtk \
