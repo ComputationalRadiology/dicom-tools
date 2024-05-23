@@ -42,7 +42,10 @@ RUN mkdir /src && cd /src && \
 COPY sort_dicoms.py /usr/local/bin
 COPY uncompress_dicoms.py /usr/local/bin
 COPY dicom_tree_to_nifti.py /usr/local/bin
-RUN chmod a+rx /usr/local/bin/sort_dicoms.py /usr/local/bin/uncompress_dicoms.py /usr/local/bin/dicom_tree_to_nifti.py
+COPY retrieve_dicoms.py /usr/local/bin
+RUN chmod a+rx /usr/local/bin/sort_dicoms.py /usr/local/bin/uncompress_dicoms.py /usr/local/bin/dicom_tree_to_nifti.py /usr/local/bin/retrieve_dicoms.py
+
+ENV PATH=${PATH}:/usr/local/bin
 
 WORKDIR /data
 CMD echo "Run binaries such as dcm2niix, dcmdjpeg, sort_dicoms.py"
