@@ -25,8 +25,8 @@ def clean_text(string):
 # Initialize logging and set its level
 logging.basicConfig()
 log = logging.getLogger()
-log.setLevel( logging.DEBUG )
 log.setLevel( logging.INFO )
+log.setLevel( logging.DEBUG )
 
 # Parse the arguments.
 parser = argparse.ArgumentParser(description='Retrieve DICOM files.')
@@ -70,28 +70,30 @@ if not os.path.isdir( dst + '/STUDY_QUERY_INFO'):
 
 # Search the DICOM node for the study info.
 # AET: Application Entity Title is used to identify a DICOM application
-#AET = 'RESEARCHPACS'
+#AET = 'SYNAPSERESEARCH'
 # AEC: The called Application Entity Title of the DICOM node that is called.
 #AEC = 'PACSDCM'
 # The named node is the DICOM peer that is called.
 #NAMEDNODE = 'pacsstor.tch.harvard.edu'
 #PORT = 104
 
-# AE: SYNAPSERESEARCH
-# Port: 104
-# IP: 10.20.2.28
+# aet: PACSDCM
+# namednode: pacsstor.tch.harvard.edu
+# dicomport: 104
+
+# aet: SYNAPSERESEARCH
+# namednode: 10.20.2.28
+# dicomport: 104
 
 # 2BP research
-# AEC: 2BPMRI_1
-# AEC: 2BPMRI_2
-# Named node: 10.27.107.244
-# Port: 104
+# aet: 2BPMRI_2
+# namednode: 10.27.107.244
+# dicomport: 104
 
 AET = args.aet
 AEC = args.aec
 NAMEDNODE = args.namednode
 PORT = args.dicomport
-
 
 # Create the output directory for the query.
 retrieveOutdir = dst + '/STUDY_QUERY_INFO'
@@ -99,7 +101,8 @@ if not os.path.isdir( retrieveOutdir ):
   os.makedirs(retrieveOutdir)
 
 # Display the command that will be run:
-print(["findscu", "-od", retrieveOutdir,
+s = " "
+print(s.join(["findscu", "-od", retrieveOutdir,
     "--extract", "--show-responses", 
     "-aet", AET, "-aec", AEC, "--study", "--key", "QueryRetrieveLevel=STUDY",
     "--key", 'PatientID=' + mrn, 
@@ -107,7 +110,7 @@ print(["findscu", "-od", retrieveOutdir,
     "--key", 'Modality=' + Modality, 
     "--key", 'StudyInstanceUID', 
     "--key", 'AccessionNumber', 
-    str(NAMEDNODE), str(PORT)])
+    str(NAMEDNODE), str(PORT)]))
 
 # Search the PACS for studies that match and create rsp*.dcm files:
 subprocess.run(["findscu", "-od", retrieveOutdir,
