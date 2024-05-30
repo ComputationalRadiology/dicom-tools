@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 
-# Alex Weston
-# Digital Innovation Lab, Mayo Clinic
-
 import os
 import pydicom # pydicom is using the gdcm package for decompression
 import sys
 import logging
 import argparse
+import shutil
 
 def clean_text(string):
     # clean and standardize text descriptions, which makes searching files easier
@@ -45,6 +43,7 @@ logging.info('Working on sorting %s files.' % len(unsortedList))
        
 count = 0
 for dicom_loc in unsortedList:
+    base_dicom_name = os.path.basename(dicom_loc)
     # read the file
     ds = pydicom.read_file(dicom_loc, force=True)
    
@@ -81,8 +80,12 @@ for dicom_loc in unsortedList:
         os.makedirs(os.path.join(dst, patientID, studyDate, studyDescription, seriesDescription))
 
     count = count + 1
-    logging.debug('Saving out ' + str(count) + ' file: %s - %s - %s - %s.' % (patientID, studyDate, studyDescription, seriesDescription ))
-    ds.save_as(os.path.join(dst, patientID, studyDate, studyDescription, seriesDescription, fileName))
+    #logging.debug('Saving out ' + str(count) + ' file: %s - %s - %s - %s.' % (patientID, studyDate, studyDescription, seriesDescription ))
+    #ds_file_name = os.path.join(dst, patientID, studyDate, studyDescription, seriesDescription, fileName)
+    #ds.save_as( ds_file_name )
+    copy_file_name = os.path.join(dst, patientID, studyDate, studyDescription, seriesDescription, base_dicom_name)
+    logging.debug('Saving out ' + str(count) + ' file: %s - %s - %s - %s.' % (patientID, studyDate, studyDescription, seriesDescription ) + ' to ' + str(copy_file_name))
+    shutil.copy(dicom_loc, copy_file_name)
 
 logging.info('Wrote out ' + str(count) + ' files.')
 if not count == fileCount:
