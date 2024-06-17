@@ -12,6 +12,6 @@ python3 dicom_tree_to_nifti.py sorted/ converted/
 
 These can be done from the command line with these steps:
 
-* docker run --rm -v "\`pwd\`":/data crl/dicom-tools uncompress_dicoms.py dicomdir uncompressed
-* docker run --rm -v "\`pwd\`":/data crl/dicom-tools sort_dicoms.py uncompressed sorted
-* docker run --rm -v "\`pwd\`":/data crl/dicom-tools dicom_tree_to_nifti.py sorted converted
+* docker run --rm -v "`pwd`":/data crl/dicom-tools uncompress_dicoms.py dicomdir dicomdir-uncompressed
+* docker run --rm -v "`pwd`":/data crl/dicom-tools sort_dicoms.py dicomdir-uncompressed dicomdir-sorted
+* docker run --rm -v "`pwd`":/data crl/dicom-tools dicom_tree_to_nifti.py dicomdir-sorted dicomdir-converted
