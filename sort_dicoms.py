@@ -57,6 +57,7 @@ for dicom_loc in unsortedList:
     modality = ds.get("Modality","NA")
     studyInstanceUID = ds.get("StudyInstanceUID","NA")
     seriesInstanceUID = ds.get("SeriesInstanceUID","NA")
+    seriesNumber = ds.get("SeriesNumber", "NA")
     instanceNumber = str(ds.get("InstanceNumber","0"))
     fileName = modality + "." + seriesInstanceUID + "." + instanceNumber + ".dcm"
        
@@ -66,7 +67,7 @@ for dicom_loc in unsortedList:
 #    except:
 #        print('an instance in file %s - %s - %s - %s" could not be decompressed. exiting.' % (patientID, studyDate, studyDescription, seriesDescription ))
    
-    # save files to a 4-tier nested folder structure
+    # save files to a 5-tier nested folder structure
     if not os.path.exists(os.path.join(dst, patientID)):
         os.makedirs(os.path.join(dst, patientID))
    
@@ -79,12 +80,12 @@ for dicom_loc in unsortedList:
     if not os.path.exists(os.path.join(dst, patientID, studyDate, studyDescription, seriesDescription)):
         os.makedirs(os.path.join(dst, patientID, studyDate, studyDescription, seriesDescription))
 
+    if not os.path.exists(os.path.join(dst, patientID, studyDate, studyDescription, seriesDescription, seriesNumber)):
+        os.makedirs(os.path.join(dst, patientID, studyDate, studyDescription, seriesDescription, seriesNumber))
+
     count = count + 1
-    #logging.debug('Saving out ' + str(count) + ' file: %s - %s - %s - %s.' % (patientID, studyDate, studyDescription, seriesDescription ))
-    #ds_file_name = os.path.join(dst, patientID, studyDate, studyDescription, seriesDescription, fileName)
-    #ds.save_as( ds_file_name )
-    copy_file_name = os.path.join(dst, patientID, studyDate, studyDescription, seriesDescription, base_dicom_name)
-    logging.debug('Saving out ' + str(count) + ' file: %s - %s - %s - %s.' % (patientID, studyDate, studyDescription, seriesDescription ) + ' to ' + str(copy_file_name))
+    copy_file_name = os.path.join(dst, patientID, studyDate, studyDescription, seriesDescription, seriesNumber, base_dicom_name)
+    logging.debug('Saving out ' + str(count) + ' file: %s - %s - %s - %s - %s.' % (patientID, studyDate, studyDescription, seriesDescription, seriesNumber ) + ' to ' + str(copy_file_name))
     shutil.copy(dicom_loc, copy_file_name)
 
 logging.info('Wrote out ' + str(count) + ' files.')
