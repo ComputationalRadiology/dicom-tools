@@ -52,12 +52,12 @@ for dicom_loc in unsortedList:
     studyDate = clean_text(ds.get("StudyDate", "NA"))
     studyDescription = clean_text(ds.get("StudyDescription", "NA"))
     seriesDescription = clean_text(ds.get("SeriesDescription", "NA"))
+    seriesNumber = clean_text(ds.get("SeriesNumber", "NA"))
    
     # generate new, standardized file name
     modality = ds.get("Modality","NA")
     studyInstanceUID = ds.get("StudyInstanceUID","NA")
     seriesInstanceUID = ds.get("SeriesInstanceUID","NA")
-    seriesNumber = ds.get("SeriesNumber", "NA")
     instanceNumber = str(ds.get("InstanceNumber","0"))
     fileName = modality + "." + seriesInstanceUID + "." + instanceNumber + ".dcm"
        
