@@ -58,7 +58,6 @@ for dicom_loc in unsortedList:
     seriesNumber = clean_text(str(ds.get("SeriesNumber", "NA")))
     logging.debug('SeriesNumber is ' + seriesNumber)
     seriesNumber = seriesNumber.rjust(3,'0')
-    seriesDescription = seriesNumber + '-' + seriesDescription
    
     # generate new, standardized file name
     modality = ds.get("Modality","NA")
@@ -66,28 +65,26 @@ for dicom_loc in unsortedList:
     seriesInstanceUID = ds.get("SeriesInstanceUID","NA")
     instanceNumber = str(ds.get("InstanceNumber","0"))
     fileName = modality + "." + seriesInstanceUID + "." + instanceNumber + ".dcm"
-       
-#    # uncompress files (using the gdcm package)
-#    try:
-#        ds.decompress()
-#    except:
-#        print('an instance in file %s - %s - %s - %s" could not be decompressed. exiting.' % (patientID, studyDate, studyDescription, seriesDescription ))
-   
-    # save files to a 4-tier nested folder structure
-    if not os.path.exists(os.path.join(dst, patientID)):
-        os.makedirs(os.path.join(dst, patientID))
-   
-    if not os.path.exists(os.path.join(dst, patientID, studyDate)):
-        os.makedirs(os.path.join(dst, patientID, studyDate))
-       
-    if not os.path.exists(os.path.join(dst, patientID, studyDate, studyDescription)):
-        os.makedirs(os.path.join(dst, patientID, studyDate, studyDescription))
-       
-    if not os.path.exists(os.path.join(dst, patientID, studyDate, studyDescription, seriesDescription)):
-        os.makedirs(os.path.join(dst, patientID, studyDate, studyDescription, seriesDescription))
-
+    despath = os.path.join(dst, patientID, studyDate, studyDescription, 
+        seriesNumber, seriesDescription)
+    if not os.path.exists( despath ):
+        os.makedirs( despath )
+        
+#    # save files to a 4-tier nested folder structure
+#     if not os.path.exists(os.path.join(dst, patientID)):
+#         os.makedirs(os.path.join(dst, patientID))
+#    
+#     if not os.path.exists(os.path.join(dst, patientID, studyDate)):
+#         os.makedirs(os.path.join(dst, patientID, studyDate))
+#        
+#     if not os.path.exists(os.path.join(dst, patientID, studyDate, studyDescription)):
+#         os.makedirs(os.path.join(dst, patientID, studyDate, studyDescription))
+#        
+#     if not os.path.exists(os.path.join(dst, patientID, studyDate, studyDescription, seriesDescription)):
+#         os.makedirs(os.path.join(dst, patientID, studyDate, studyDescription, seriesDescription))
+ 
     count = count + 1
-    copy_file_name = os.path.join(dst, patientID, studyDate, studyDescription, seriesDescription, base_dicom_name)
+    copy_file_name = os.path.join(despath, base_dicom_name)
     logging.debug('Saving out ' + str(count) + ' file: %s - %s - %s - %s.' % (patientID, studyDate, studyDescription, seriesDescription) + ' to ' + str(copy_file_name))
     shutil.copy(dicom_loc, copy_file_name)
 
