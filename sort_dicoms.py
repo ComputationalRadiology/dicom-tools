@@ -6,6 +6,7 @@ import sys
 import logging
 import argparse
 import shutil
+import math
 
 def clean_text(string):
     # clean and standardize text descriptions, which makes searching files easier
@@ -43,7 +44,21 @@ for root, dirs, files in os.walk(src):
 
 fileCount = len(unsortedList)
 logging.info('Working on sorting %s files.' % len(unsortedList))
-       
+
+maxSeriesNumber = 1
+for dicom_loc in unsortedList:
+    base_dicom_name = os.path.basename(dicom_loc)
+    # read the file
+    ds = pydicom.read_file(dicom_loc, force=True)
+    seriesNumber = ds.get("SeriesNumber", "NA")
+    seriesNumberStr = clean_text(str(ds.get("SeriesNumber", "NA")))
+    if seriesNumber > maxSeriesNumber:
+      maxSeriesNumber = seriesNumber
+
+maxSeriesNumberDigits = int(math.log10(maxSeriesNumber))+1
+logging.debug('Max series number is ' + str(maxSeriesNumber) + '.')
+logging.debug('Max series number digits ' + str(maxSeriesNumberDigits))
+
 count = 0
 for dicom_loc in unsortedList:
     base_dicom_name = os.path.basename(dicom_loc)
@@ -57,7 +72,7 @@ for dicom_loc in unsortedList:
     seriesDescription = clean_text(ds.get("SeriesDescription", "NA"))
     seriesNumber = clean_text(str(ds.get("SeriesNumber", "NA")))
     logging.debug('SeriesNumber is ' + seriesNumber)
-    seriesNumber = seriesNumber.rjust(4,'0')
+    seriesNumber = seriesNumber.rjust(maxSeriesNumberDigits,'0')
    
     # generate new, standardized file name
     modality = ds.get("Modality","NA")
