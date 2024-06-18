@@ -57,7 +57,7 @@ for dicom_loc in unsortedList:
     seriesDescription = clean_text(ds.get("SeriesDescription", "NA"))
     seriesNumber = clean_text(str(ds.get("SeriesNumber", "NA")))
     logging.debug('SeriesNumber is ' + seriesNumber)
-    seriesNumber = seriesNumber.rjust(3,'0')
+    seriesNumber = seriesNumber.rjust(4,'0')
    
     # generate new, standardized file name
     modality = ds.get("Modality","NA")
