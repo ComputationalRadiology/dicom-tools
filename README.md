@@ -1,5 +1,5 @@
-# dicom-tools
-Collection of tools for reading, processing and converting DICOM images.
+# crl/dicom-tools
+Collection of tools for retrieving, formatting, organizing and converting DICOM images.
 
 Step 1: Remove encoding
 python3 uncompress_dicoms.py dicomInputDirectory uncompressed/
@@ -22,7 +22,21 @@ docker run --rm -v "`pwd`":/data crl/dicom-tools uncompress_dicoms.py dicomdir d
 docker run --rm -v "`pwd`":/data crl/dicom-tools sort_dicoms.py dicomdir-uncompressed dicomdir-sorted
 ```
 
-* Convert the DICOM to NIFTI format:
+* Convert the entire sorted DICOM directory tree to NIFTI format:
 ```
 docker run --rm -v "`pwd`":/data crl/dicom-tools dicom_tree_to_nifti.py dicomdir-sorted dicomdir-converted
 ```
+
+# Getting the container at Boston Children's Hospital:
+
+To pull the container from the BCH gitlab container registry:
+```
+docker pull ccts3.aws.chboston.org:5151/computationalradiology/dicom-tools
+```
+
+Tag the local container with a shorter name:
+
+```
+docker tag ccts3.aws.chboston.org:5151/computationalradiology/dicom-tools crl/dicom-tools
+```
+
