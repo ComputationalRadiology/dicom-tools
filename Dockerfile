@@ -48,7 +48,7 @@ RUN chmod a+rx /usr/local/bin/sort_dicoms.py /usr/local/bin/uncompress_dicoms.py
 ENV PATH=${PATH}:/usr/local/bin
 
 WORKDIR /data
-CMD echo "Run binaries such as dcm2niix, dcmdjpeg, sort_dicoms.py"
+CMD ["echo", "Run binaries such as dcm2niix, dcmdjpeg, sort_dicoms.py"]
 
 
 # DOCKER_BUILDKIT=1 docker build --network=host --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') -t crl/dicom-tools:latest --build-arg VERSION=$BUILD_DATE -f Dockerfile .

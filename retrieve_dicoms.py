@@ -102,7 +102,7 @@ if not os.path.isdir( retrieveOutdir ):
 
 # Display the command that will be run:
 s = " "
-print(s.join(["findscu", "-od", retrieveOutdir,
+print(s.join(["/usr/bin/findscu", "-od", retrieveOutdir,
     "--extract", "--show-responses", 
     "-aet", AET, "-aec", AEC, "--study", "--key", "QueryRetrieveLevel=STUDY",
     "--key", 'PatientID=' + mrn, 
@@ -113,7 +113,7 @@ print(s.join(["findscu", "-od", retrieveOutdir,
     str(NAMEDNODE), str(PORT)]))
 
 # Search the PACS for studies that match and create rsp*.dcm files:
-subprocess.run(["findscu", "-od", retrieveOutdir,
+subprocess.run(["/usr/bin/findscu", "-od", retrieveOutdir,
     "--extract", "--show-responses", 
     "-aet", AET, "-aec", AEC, "--study", "--key", "QueryRetrieveLevel=STUDY",
     "--key", 'PatientID=' + mrn, 
@@ -158,7 +158,15 @@ for entry in obj :
         print('DICOM data retrieved to : ' + outdir)
         if not os.path.isdir( outdir ):
           os.mkdir(outdir)
-        subprocess.run(["getscu", 
+        s = " "
+        print(s.join( ["/usr/bin/getscu", 
+          "--output-directory", outdir, 
+          "--verbose",
+          "-aet", AET, 
+          "-aec", AEC, 
+          "--study", 
+          str(NAMEDNODE), str(PORT), entry.path ]) )
+        subprocess.run(["/usr/bin/getscu", 
           "--output-directory", outdir, 
           "--verbose",
           "-aet", AET, 
