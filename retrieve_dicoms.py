@@ -100,6 +100,14 @@ retrieveOutdir = dst + '/STUDY_QUERY_INFO'
 if not os.path.isdir( retrieveOutdir ):
   os.makedirs(retrieveOutdir)
 
+# Check if the retrieve directory is writable
+try:
+    filehandle = open( retrieveOutdir + '/retrieve.txt', 'w' )
+except IOError:
+    sys.exit( 'Unable to write to file ' + retrieveOutdir )
+filehandle.close()
+os.remove(retrieveOutdir + '/retrieve.txt')
+
 # Display the command that will be run:
 s = " "
 print(s.join(["/usr/bin/findscu", "-od", retrieveOutdir,
@@ -158,6 +166,13 @@ for entry in obj :
         print('DICOM data retrieved to : ' + outdir)
         if not os.path.isdir( outdir ):
           os.mkdir(outdir)
+        # Check if the retrieve directory is writable
+        try:
+          filehandle = open( outdir + '/retrieve.txt', 'w' )
+        except IOError:
+          sys.exit( 'Unable to write to file ' + retrieveOutdir )
+        filehandle.close()
+        os.remove(outdir + '/retrieve.txt')
         s = " "
         print(s.join( ["/usr/bin/getscu", 
           "--output-directory", outdir, 
