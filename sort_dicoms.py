@@ -52,6 +52,8 @@ for dicom_loc in unsortedList:
     ds = pydicom.read_file(dicom_loc, force=True)
     seriesNumber = ds.get("SeriesNumber", "NA")
     seriesNumberStr = clean_text(str(ds.get("SeriesNumber", "NA")))
+    if seriesNumberStr.isdigit() == False:
+      continue
     if seriesNumber > maxSeriesNumber:
       maxSeriesNumber = seriesNumber
 
