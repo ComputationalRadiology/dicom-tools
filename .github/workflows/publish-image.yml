@@ -1,0 +1,20 @@
+name: Publish crl/dicom-tools container image
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+    
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  
+jobs:
+  publish-dicom-tools-image:
+    runs-on: ubuntu-latest
+    name: Publish a container image
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
