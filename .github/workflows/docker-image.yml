@@ -23,8 +23,7 @@ jobs:
         docker save crl/dicom-tools:${{ steps.date.outputs.NOW }} -o crl-dicom-tools-${{ steps.date.outputs.NOW }}.tar
         
 
-    - name: Upload Build Artifacts
-        uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v4
         with:
           name: crl-dicom-tools-container
           path: crl-dicom-tools-${{ steps.date.outputs.NOW }}.tar
