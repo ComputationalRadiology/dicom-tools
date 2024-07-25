@@ -13,6 +13,7 @@ env:
 jobs:
   publish-dicom-tools-image:
     runs-on: ubuntu-latest
+    name: Publish a container image
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
