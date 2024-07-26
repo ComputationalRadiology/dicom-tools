@@ -29,6 +29,14 @@ docker run --rm -v "`pwd`":/data crl/dicom-tools dicom_tree_to_nifti.py dicomdir
 
 # Getting the container at Boston Children's Hospital:
 
+First authenticate to the internal BCH container registry and then run:
+
+```
+docker login ccts3.aws.chboston.org:5151 --username firstname.lastname --password glpat-access-token
+```
+
+
+
 To pull the container from the BCH gitlab container registry:
 ```
 docker pull ccts3.aws.chboston.org:5151/computationalradiology/dicom-tools
