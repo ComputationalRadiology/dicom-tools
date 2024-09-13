@@ -1,5 +1,4 @@
 name: Docker Image CI
-
 on:
   workflow_dispatch:
   push:
@@ -10,10 +9,20 @@ on:
 jobs:
 
   build:
-
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v3
+    - name: Set current date
+      id: date
+      run: echo "NOW=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+      
+    - uses: actions/checkout@v4
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag crl/dicom-tools:$(date +%s)
+      run: |
+        docker build . --file Dockerfile --tag crl/dicom-tools:${{ steps.date.outputs.NOW }}
+        docker save crl/dicom-tools:${{ steps.date.outputs.NOW }} -o crl-dicom-tools-${{ steps.date.outputs.NOW }}.tar
+        
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: crl-dicom-tools-container
+        path: crl-dicom-tools-${{ steps.date.outputs.NOW }}.tar
