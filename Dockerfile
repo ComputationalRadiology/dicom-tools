@@ -45,6 +45,9 @@ COPY dicom_tree_to_nifti.py /usr/local/bin
 COPY retrieve_dicoms.py /usr/local/bin
 RUN chmod a+rx /usr/local/bin/sort_dicoms.py /usr/local/bin/uncompress_dicoms.py /usr/local/bin/dicom_tree_to_nifti.py /usr/local/bin/retrieve_dicoms.py
 
+COPY json_dicom_info.py /usr/local/bin
+RUN chmod a+rx /usr/local/bin/json_dicom_info.py
+
 ENV PATH=${PATH}:/usr/local/bin
 
 WORKDIR /data
