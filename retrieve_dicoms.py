@@ -90,6 +90,13 @@ if not os.path.isdir( dst + '/STUDY_QUERY_INFO'):
 # namednode: 10.27.107.244
 # dicomport: 104
 
+# Retrieve from Synapse:
+#   sudo docker run --rm -it --volume `pwd`:/data crl/dicom-tools \
+# retrieve_dicoms.py --outputDir . --subjectID NNNNNNN \
+# --studyDate YYYYMMDD --aet SYNAPSERESEARCH \
+#  --aec PACSDCM --namednode pacsstor.tch.harvard.edu
+#
+
 AET = args.aet
 AEC = args.aec
 NAMEDNODE = args.namednode
