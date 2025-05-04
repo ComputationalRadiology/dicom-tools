@@ -40,6 +40,7 @@ RUN mkdir /src && cd /src && \
     cd dcm2niix && mkdir build && cd build && cmake .. && make && make install
 
 # Install the latest GDCM
+# https://github.com/malaterre/GDCM/blob/master/INSTALL.txt
 RUN cd /src && \
     git clone --branch release https://git.code.sf.net/p/gdcm/gdcm && \
     mkdir build-gdcm && cd build-gdcm && \
