@@ -53,7 +53,7 @@ maxSeriesNumber = 1
 for dicom_loc in unsortedList:
     base_dicom_name = os.path.basename(dicom_loc)
     # read the file
-    ds = pydicom.read_file(dicom_loc, force=True)
+    ds = pydicom.dcmread(dicom_loc, force=True)
     seriesNumber = ds.get("SeriesNumber", "NA")
     seriesNumberStr = clean_text(str(ds.get("SeriesNumber", "NA")))
     if seriesNumberStr.isdigit() == False:
@@ -71,7 +71,7 @@ count = 0
 for dicom_loc in unsortedList:
     base_dicom_name = os.path.basename(dicom_loc)
     # read the file
-    ds = pydicom.read_file(dicom_loc, force=True)
+    ds = pydicom.dcmread(dicom_loc, force=True)
 
     seriesNumber = clean_text(str(ds.get("SeriesNumber", "NA")))
     seriesNumber = seriesNumber.rjust(maxSeriesNumberDigits,'0')
