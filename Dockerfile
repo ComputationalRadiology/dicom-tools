@@ -72,6 +72,14 @@ RUN mkdir /src && cd /src && \
     git clone https://github.com/rordenlab/dcm2niix.git && \
     cd dcm2niix && mkdir build && cd build && cmake .. && make && make install
 
+# Install the latest GDCM
+# https://github.com/malaterre/GDCM/blob/master/INSTALL.txt
+RUN cd /src && \
+    git clone --branch release https://git.code.sf.net/p/gdcm/gdcm && \
+    mkdir build-gdcm && cd build-gdcm && \
+    cmake -DGDCM_BUILD_APPLICATIONS=1 -DCMAKE_INSTALL_PREFIX=/opt/gdcm ../gdcm && make && make install
+
+
 COPY sort_dicoms.py /usr/local/bin
 COPY uncompress_dicoms.py /usr/local/bin
 COPY dicom_tree_to_nifti.py /usr/local/bin
@@ -81,7 +89,7 @@ RUN chmod a+rx /usr/local/bin/sort_dicoms.py /usr/local/bin/uncompress_dicoms.py
 COPY json_dicom_info.py /usr/local/bin
 RUN chmod a+rx /usr/local/bin/json_dicom_info.py
 
-ENV PATH=${PATH}:/usr/local/bin
+ENV PATH=${PATH}:/usr/local/bin:/opt/gdcm/bin
 
 WORKDIR /data
 CMD ["echo", "Run binaries such as dcm2niix, dcmdjpeg, sort_dicoms.py"]
