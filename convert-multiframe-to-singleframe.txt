@@ -1,0 +1,10 @@
+
+A good tool for converting from MultiFrame DICOM to single frame is emf2sf
+from the dcm4che-tools package.
+
+docker pull dcm4che/dcm4che-tools
+
+# To convert multiframe to a series of dicom files:
+docker run --rm -it --volume `pwd`:/data dcm4che/dcm4che-tools emf2sf \
+ --out-file /data/series-000.dcm /data/multiframe.dcm
+
