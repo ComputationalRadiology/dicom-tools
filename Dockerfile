@@ -2,35 +2,68 @@ FROM ubuntu:jammy
 ENV DEBIAN_FRONTEND="noninteractive"
 
 # A word about HTTP_PROXY
-#
-#   The Docker build networking and proxy will match the build host if you use:
-# --network=host
-#
 # On systems that need to access a proxy to download packages, the build
-# environment needs to know about the proxy to use.
-#   apt-get and pip3 use different conventions for accessing a proxy.
-# 
+# should be called with a build-arg that passes in the proxy to use.
 #  A symptom that this is needed is that apt-get cannot access packages.
-#  A symptom that this is needed is that pip3 cannot access packages.
+#  Another symptom is that pip cannot access packages.
 # This is not needed if building on a system that does not  use a proxy.
-#   apt can be configured to read from archives via https.
 #
+# To set the proxy variable from the build environment:
+# docker build --build-arg HTTP_PROXY="https://proxy.example.com:3128" .
+#   OR
+
+# docker build --build-arg HTTP_PROXY .
+#   if the HTTP_PROXY environment variable is set.
+# The above is important for pip to resolve repositories.
+#
+# To run the container with knowledge of a proxy, use:
+# docker run --env HTTP_PROXY="https://proxy.example.com:3128" crl/dicom-tools
+#
+# If the build host is configured with the correct proxy information:
+# docker build --network=host -t crl/dicom-tools:latest -f Dockerfile .
+
 
 LABEL maintainer="warfield@crl.med.harvard.edu"
 LABEL vendor="Computational Radiology Laboratory"
 
 # Update the ubuntu.
-RUN apt-get -y update && \
-    apt-get -y upgrade
+RUN DEBIAN_FRONTEND=noninteractive apt-get \
+    --option acquire::http::proxy="${HTTP_PROXY}" \
+    --option acquire::https::proxy=false \
+      -y update && \
+    apt-get \
+    --option acquire::http::proxy="${HTTP_PROXY}" \
+    --option acquire::https::proxy=false \
+      -y upgrade
 
+RUN DEBIAN_FRONTEND=noninteractive apt-get \
+    --option acquire::http::proxy="${HTTP_PROXY}" \
+    --option acquire::https::proxy=false \
+    install -y \
+    apt-utils locales
 
-RUN apt-get install -y build-essential git cmake pkg-config vim
+ENV LANGUAGE=en_US.UTF-8
+ENV LANG=en_US.UTF-8
+ENV LC_ALL=en_US.UTF-8
 
-RUN apt-get install -y --no-install-recommends \
+RUN DEBIAN_FRONTEND=noninteractive locale-gen en_US.UTF-8
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get \
+    --option acquire::http::proxy="${HTTP_PROXY}" \
+    --option acquire::https::proxy=false \
+    install -y \
+    build-essential git cmake pkg-config
+
+RUN apt-get \
+    --option acquire::http::proxy="${HTTP_PROXY}" \
+    --option acquire::https::proxy=false \
+    install -y --no-install-recommends \
     dcmtk \
     dicom3tools \
     jq \
-    vim nano python3 python3-pip && \
+    vim nano git curl wget \
+    cron gnupg jq netcat tzdata \
+    python3 python3-pip && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install pydicom pynetdicom SimpleITK numpy
@@ -38,6 +71,14 @@ RUN pip3 install pydicom pynetdicom SimpleITK numpy
 RUN mkdir /src && cd /src && \
     git clone https://github.com/rordenlab/dcm2niix.git && \
     cd dcm2niix && mkdir build && cd build && cmake .. && make && make install
+
+# Install the latest GDCM
+# https://github.com/malaterre/GDCM/blob/master/INSTALL.txt
+RUN cd /src && \
+    git clone --branch release https://git.code.sf.net/p/gdcm/gdcm && \
+    mkdir build-gdcm && cd build-gdcm && \
+    cmake -DGDCM_BUILD_APPLICATIONS=1 -DCMAKE_INSTALL_PREFIX=/opt/gdcm ../gdcm && make && make install
+
 
 COPY sort_dicoms.py /usr/local/bin
 COPY uncompress_dicoms.py /usr/local/bin
@@ -48,7 +89,7 @@ RUN chmod a+rx /usr/local/bin/sort_dicoms.py /usr/local/bin/uncompress_dicoms.py
 COPY json_dicom_info.py /usr/local/bin
 RUN chmod a+rx /usr/local/bin/json_dicom_info.py
 
-ENV PATH=${PATH}:/usr/local/bin
+ENV PATH=${PATH}:/usr/local/bin:/opt/gdcm/bin
 
 WORKDIR /data
 CMD ["echo", "Run binaries such as dcm2niix, dcmdjpeg, sort_dicoms.py"]
