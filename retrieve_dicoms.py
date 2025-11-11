@@ -83,6 +83,7 @@ if not os.path.isdir( dst + '/STUDY_QUERY_INFO'):
 
 # aet: SYNAPSERESEARCH
 # namednode: 10.20.2.28
+#          synapseresearch.tch.harvard.edu
 # dicomport: 104
 
 # 2BP research
@@ -96,6 +97,13 @@ if not os.path.isdir( dst + '/STUDY_QUERY_INFO'):
 # --studyDate YYYYMMDD --aet SYNAPSERESEARCH \
 #  --aec PACSDCM --namednode pacsstor.tch.harvard.edu
 #
+
+# Retrieve from SynapseResearch:
+#   sudo docker run --rm -it --volume `pwd`:/data crl/dicom-tools \
+# retrieve_dicoms.py --outputDir . --subjectID NNNNNNN \
+# --studyDate YYYYMMDD --aet PACSDCM --aec SYNAPSERESEARCH \
+#  --namednode 10.20.2.28
+
 
 AET = args.aet
 AEC = args.aec
