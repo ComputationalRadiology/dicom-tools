@@ -69,7 +69,7 @@ RUN apt-get \
 RUN pip3 install pydicom pynetdicom SimpleITK numpy
 
 RUN mkdir /src && cd /src && \
-    git clone https://github.com/rordenlab/dcm2niix.git && \
+    git clone --single-branch --branch v1.0.20250506 https://github.com/rordenlab/dcm2niix.git && \
     cd dcm2niix && mkdir build && cd build && cmake .. && make && make install
 
 # Install the latest GDCM
